@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - mobile-random-group-first-paint
+  pull_request:
+    branches:
+      - scriptable-symmetry-patterns-apk
   workflow_dispatch:
 
 permissions:
