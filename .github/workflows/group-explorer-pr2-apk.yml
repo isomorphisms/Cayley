@@ -21,9 +21,29 @@ jobs:
       - name: Test and verify mobile entry point
         run: |
           npm test
+          node --check MobileGroup.js
+          node --check Mobile.js
+          node --check MobileTable.js
           test -s Mobile.html
           test -s Mobile.js
-          grep -F 'getGroupOrDownload(randomURL())' Mobile.js
+          test -s MobileGroup.js
+          test -s MobileTable.js
+          grep -F "new MobileGroup(await response.text()" Mobile.js
+          grep -F "await import('./MobileTable.js')" Mobile.js
+          ! grep -F "./js/Library.js" Mobile.js
+          ! grep -F "./js/XMLGroup.js" Mobile.js
+          ! grep -F "./js/CayleyDiagramView.js" Mobile.js
+          ! grep -F "./js/MulttableView.js" Mobile.js
+          ! grep -F "toDataURL" Mobile.js
+          ! grep -Fi "jquery" Mobile.html
+          node <<'NODE'
+          const fs = require('fs')
+          const source = fs.readFileSync('Mobile.js', 'utf8')
+          const diagram = source.indexOf('createCayleyCanvas(group, size)')
+          const paint = source.indexOf('await afterPaint()')
+          const table = source.indexOf("await import('./MobileTable.js')")
+          if (!(diagram >= 0 && diagram < paint && paint < table)) process.exit(1)
+          NODE
           grep -F 'Mobile.html' android-app/app/src/main/java/org/isomorphisms/groupexplorer/MainActivity.java
       - uses: actions/setup-java@v4
         with:
@@ -44,6 +64,8 @@ jobs:
           test -s "$APK"
           unzip -l "$APK" | grep -F "assets/site/Mobile.html"
           unzip -l "$APK" | grep -F "assets/site/Mobile.js"
+          unzip -l "$APK" | grep -F "assets/site/MobileGroup.js"
+          unzip -l "$APK" | grep -F "assets/site/MobileTable.js"
           unzip -l "$APK" | grep -F "assets/site/groups/Z_5.group"
           cp "$APK" cayley-mobile-first-paint-debug.apk
           sha256sum cayley-mobile-first-paint-debug.apk
