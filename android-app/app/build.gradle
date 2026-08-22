@@ -7,11 +7,11 @@ android {
     compileSdk 35
 
     defaultConfig {
-        applicationId 'org.isomorphisms.groupexplorer.patternpr2'
+        applicationId 'org.isomorphisms.groupexplorer'
         minSdk 24
         targetSdk 35
         versionCode 1
-        versionName '3.6.1-pr2-pattern'
+        versionName '0.1.0'
     }
 
     sourceSets {
@@ -28,6 +28,8 @@ tasks.register('syncGroupExplorerWeb', Copy) {
         exclude '.git/**'
         exclude '.github/**'
         exclude 'android-app/**'
+        exclude 'fdroid/**'
+        exclude 'fastlane/**'
         exclude 'node_modules/**'
         exclude '.idea/**'
         exclude '.vscode/**'
