@@ -31,6 +31,11 @@ tasks.register('syncGroupExplorerWeb', Copy) {
         exclude 'node_modules/**'
         exclude '.idea/**'
         exclude '.vscode/**'
+        // These are static-web-server sidecars. Android's asset merger strips
+        // compression suffixes when checking resource identity, so sitemap.xml
+        // and sitemap.xml.gz collide even though both coexist in the web tree.
+        exclude '**/*.gz'
+        exclude '**/*.br'
     }
     into(web_assets)
 }
