@@ -26,7 +26,7 @@ async function loadGroup (url) {
   if (!response.ok) {
     throw new Error(`Error loading ${url}: HTTP ${response.status}`)
   }
-  return new MobileGroup(await response.text(), new URL(url, window.location.href).href)
+  return new MobileGroup(await response.text())
 }
 
 function positionsOnCircle (order, size) {
@@ -92,7 +92,7 @@ function createCayleyCanvas (group, size) {
     context.fillStyle = context.strokeStyle
 
     group.elements.forEach((element) => {
-      const product = group.mult(element, generator)
+      const product = group.mult(generator, element)
       if (product === element || (involution && element > product)) return
 
       const start = positions[element]
@@ -133,7 +133,7 @@ async function showRandomGroup () {
   table_slot.replaceChildren()
 
   try {
-    // Fetch one bundled file and parse only the multiplication table and generator tags.
+    // Fetch one bundled file; numeric row parsing stays lazy.
     const group = await loadGroup(randomURL())
     const size = displaySize()
 

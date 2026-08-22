@@ -15,7 +15,7 @@ function attribute (tag /*: string */, name /*: string */) /*: ?string */ {
   return match == null ? undefined : match[1]
 }
 
-function parseMulttable (text /*: string */) /*: Array<Array<number>> */ {
+function rowSources (text /*: string */) /*: Array<string> */ {
   const source = section(text, 'multtable')
   if (source == null) {
     throw new Error('group file has no multiplication table')
@@ -23,7 +23,7 @@ function parseMulttable (text /*: string */) /*: Array<Array<number>> */ {
 
   return Array.from(
     source.matchAll(/<row(?:\s[^>]*)?>([\s\S]*?)<\/row>/gi),
-    (match) => integerList(match[1])
+    (match) => match[1]
   )
 }
 
@@ -36,28 +36,43 @@ function parseGenerators (text /*: string */) /*: Array<number> */ {
 
 export default class MobileGroup {
   /*::
-  URL: string;
-  multtable: Array<Array<number>>;
   order: number;
   elements: Array<number>;
+  _row_sources: Array<string>;
+  _rows: Array<void | Array<number>>;
   _generators: Array<number>;
   */
 
-  constructor (text /*: string */, url /*: string */) {
-    this.URL = url
-    this.multtable = parseMulttable(text)
-    this.order = this.multtable.length
+  constructor (text /*: string */) {
+    this._row_sources = rowSources(text)
+    this.order = this._row_sources.length
 
-    if (this.order === 0 || this.multtable.some((row) => row.length !== this.order)) {
-      throw new Error('group file has a malformed multiplication table')
+    if (this.order === 0) {
+      throw new Error('group file has an empty multiplication table')
     }
 
     this.elements = Array.from({length: this.order}, (_, inx) => inx)
+    this._rows = new Array(this.order)
     this._generators = parseGenerators(text)
   }
 
+  row (index /*: number */) /*: Array<number> */ {
+    const normalized = index % this.order
+    let row = this._rows[normalized]
+
+    if (row == null) {
+      row = integerList(this._row_sources[normalized])
+      if (row.length !== this.order) {
+        throw new Error(`group file has malformed multiplication row ${normalized}`)
+      }
+      this._rows[normalized] = row
+    }
+
+    return row
+  }
+
   mult (left /*: number */, right /*: number */) /*: number */ {
-    return this.multtable[left % this.order][right % this.order]
+    return this.row(left)[right % this.order]
   }
 
   get generators () /*: Array<Array<number>> */ {
@@ -76,7 +91,7 @@ export default class MobileGroup {
       if (element == null) continue
 
       generators.forEach((generator) => {
-        const product = this.mult(element, generator)
+        const product = this.mult(generator, element)
         if (!seen.has(product)) {
           seen.add(product)
           queue.push(product)
