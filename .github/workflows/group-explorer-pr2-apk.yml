@@ -1,12 +1,9 @@
-name: Group Explorer PR2 APK
+name: Mobile first-paint APK
 
 on:
   push:
     branches:
-      - scriptable-symmetry-patterns-apk
-  pull_request:
-    branches:
-      - scriptable-symmetry-patterns
+      - mobile-random-group-first-paint
   workflow_dispatch:
 
 permissions:
@@ -18,11 +15,13 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - name: Verify symmetry-pattern source
+      - name: Test and verify mobile entry point
         run: |
           npm test
-          grep -F "Pattern.html?groupURL=" GroupExplorer.html
-          test -s js/GroupPattern.js
+          test -s Mobile.html
+          test -s Mobile.js
+          grep -F 'getGroupOrDownload(randomURL())' Mobile.js
+          grep -F 'Mobile.html' android-app/app/src/main/java/org/isomorphisms/groupexplorer/MainActivity.java
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -36,19 +35,18 @@ jobs:
       - name: Build debug APK
         working-directory: android-app
         run: gradle --no-daemon :app:assembleDebug
-      - name: Verify bundled Group Explorer
+      - name: Verify bundled mobile app
         run: |
           APK=android-app/app/build/outputs/apk/debug/app-debug.apk
           test -s "$APK"
-          unzip -l "$APK" | grep -F "assets/site/GroupExplorer.html"
-          unzip -l "$APK" | grep -F "assets/site/Pattern.html"
-          unzip -l "$APK" | grep -F "assets/site/Pattern.js"
-          unzip -l "$APK" | grep -F "assets/site/js/GroupPattern.js"
-          cp "$APK" group-explorer-pr2-pattern-debug.apk
-          sha256sum group-explorer-pr2-pattern-debug.apk
+          unzip -l "$APK" | grep -F "assets/site/Mobile.html"
+          unzip -l "$APK" | grep -F "assets/site/Mobile.js"
+          unzip -l "$APK" | grep -F "assets/site/groups/Z_5.group"
+          cp "$APK" cayley-mobile-first-paint-debug.apk
+          sha256sum cayley-mobile-first-paint-debug.apk
       - uses: actions/upload-artifact@v4
         with:
-          name: group-explorer-pr2-pattern-apk
-          path: group-explorer-pr2-pattern-debug.apk
+          name: cayley-mobile-first-paint-apk
+          path: cayley-mobile-first-paint-debug.apk
           if-no-files-found: error
           retention-days: 30
