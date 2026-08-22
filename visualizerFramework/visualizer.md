@@ -27,6 +27,7 @@ import XMLGroup from '../js/XMLGroup.js';
 import * as Version from '../Version.js';
 
 const VISUALIZER_LAYOUT_URL = './visualizerFramework/visualizer.html';
+const MOBILE_LAYOUT = window.matchMedia('(max-width: 760px), (pointer: coarse) and (max-width: 900px)');
 
 let Group /*: XMLGroup*/;
 let Help_Page /*: string*/;
@@ -53,6 +54,16 @@ export async function load (group /*: ?XMLGroup */, help_page /*: string */) /*:
   if (group == null || group.URL == null)
     $('#find-group').hide()
   $('#version').text(Version.label)
+
+  // On phones the visualization should get the screen first. The existing
+  // show/hide control icons expose the panel as a bottom sheet via mobile.css.
+  if (MOBILE_LAYOUT.matches && !window.location.href.includes('SheetEditor=true')) {
+    const controls = $('#controls').length != 0 ? '#controls' :
+                     $('#control-panel').length != 0 ? '#control-panel' :
+                     null
+    if (controls != null)
+      hideControls(controls)
+  }
 }
 /*
 ```
