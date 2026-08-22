@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - scriptable-symmetry-patterns-apk
+  pull_request:
+    branches:
+      - scriptable-symmetry-patterns
   workflow_dispatch:
 
 permissions:
