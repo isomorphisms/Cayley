@@ -6,6 +6,12 @@ on:
       - inspiration-pdfs
     paths:
       - .github/workflows/vendor-inspiration-pdfs.yml
+  pull_request:
+    branches:
+      - master
+    paths:
+      - .github/workflows/vendor-inspiration-pdfs.yml
+      - inspiration/README.md
   workflow_dispatch:
 
 permissions:
@@ -52,8 +58,9 @@ jobs:
             mv "$tmp" "inspiration/$name"
           }
 
-          # Allen Hatcher explicitly permits paper/electronic copying for
-          # noncommercial use on his Algebraic Topology materials.
+          # Allen Hatcher's Algebraic Topology materials state that paper or
+          # electronic copies for noncommercial use may be made freely without
+          # explicit permission. The attribution/provenance note is in README.
           fetch_pdf \
             hatcher-spectral-sequences.pdf \
             https://pi.math.cornell.edu/~hatcher/AT/ATch5.pdf
