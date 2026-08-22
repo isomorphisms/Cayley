@@ -1,0 +1,40 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'org.isomorphisms.groupexplorer'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'org.isomorphisms.groupexplorer'
+        minSdk 24
+        targetSdk 35
+        versionCode 1
+        versionName '3.6.1-pr1-mobile'
+    }
+
+    sourceSets {
+        main {
+            assets.srcDir "$buildDir/generated/web-assets"
+        }
+    }
+}
+
+def web_assets = layout.buildDirectory.dir('generated/web-assets/site')
+
+tasks.register('syncGroupExplorerWeb', Copy) {
+    from(rootProject.projectDir.parentFile) {
+        exclude '.git/**'
+        exclude '.github/**'
+        exclude 'android-app/**'
+        exclude 'node_modules/**'
+        exclude '.idea/**'
+        exclude '.vscode/**'
+    }
+    into(web_assets)
+}
+
+tasks.named('preBuild').configure {
+    dependsOn 'syncGroupExplorerWeb'
+}
