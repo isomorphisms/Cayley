@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = 'GroupExplorerPR2Android'
+rootProject.name = 'CayleyAndroid'
 include ':app'
