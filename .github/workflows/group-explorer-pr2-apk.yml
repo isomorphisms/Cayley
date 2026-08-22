@@ -21,6 +21,7 @@ jobs:
       - name: Test and verify mobile entry point
         run: |
           npm test
+          node tests/mobile-first-paint.test.mjs
           node --check MobileGroup.js
           node --check Mobile.js
           node --check MobileTable.js
