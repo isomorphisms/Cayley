@@ -1,0 +1,7 @@
+Group Explorer is visualization software for learning abstract algebra and finite group theory. It includes Cayley diagrams, multiplication tables, cycle graphs, group information, and other visualizations.
+
+This Android package is a modified distribution of the LGPL-licensed Group Explorer web application. The upstream project credits Ray Ellis with developing most of the web version and Nathan Carter with developing the original version, contributing to the web version, and authoring the built-in help system.
+
+This fork adds Android/mobile packaging and experimental symmetry-pattern visualization while preserving the original project attribution and license. The upstream project is https://github.com/nathancarter/group-explorer and the modified source used for this Android package is https://github.com/isomorphisms/group-explorer.
+
+The app bundles the Group Explorer source into an Android WebView package. Three.js remains under its included MIT license; other third-party components retain their own licenses.
