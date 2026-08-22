@@ -2,25 +2,9 @@ name: F-Droid release build
 
 on:
   pull_request:
-    paths:
-      - '.github/workflows/fdroid-build.yml'
-      - 'android-app/**'
-      - 'fdroid/**'
-      - 'fastlane/**'
-      - 'NOTICE.md'
-      - 'COPYING'
-      - 'COPYING.LESSER'
-      - '*.html'
-      - '*.js'
-      - 'js/**'
-      - 'lib/**'
-      - 'groups/**'
-      - 'patterns/**'
-      - 'style/**'
-      - 'visualizerFramework/**'
-      - 'package.json'
-      - 'tests/**'
   push:
+    branches:
+      - cayley
     tags:
       - 'android-v*'
   workflow_dispatch:
