@@ -133,6 +133,19 @@ for (const filename of ['Q_4.group', 'A_4.group']) {
     );
 }
 
+{
+    const library_page = await readFile(new URL('../GroupExplorer.html', import.meta.url), 'utf8');
+    const pattern_page = await readFile(new URL('../Pattern.js', import.meta.url), 'utf8');
+    assert.match(library_page, /Pattern\.html\?groupURL=/,
+        'group library should link a selected group to Pattern.html');
+    assert.match(library_page, /MutationObserver/,
+        'cached group rows should be repaired with the pattern link');
+    assert.match(pattern_page, /searchParams\.get\('groupURL'\)/,
+        'pattern page should read the selected group URL');
+    assert.match(pattern_page, /patternSourceForGroup\(group\)/,
+        'selected group should compile to pattern source');
+}
+
 assert.equal(Pattern.conwayOrbifoldGenerators('*442', 84).length, 4);
 assert.throws(() => Pattern.conwayOrbifoldGenerators('*not-yet', 84), /not shorthand yet/);
 
