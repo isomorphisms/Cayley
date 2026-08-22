@@ -1,54 +1,29 @@
+# Cayley
 
-# Group Explorer 3.6
+Native, touch-first Cayley explorer.
 
-Group Explorer is visualization software for students and instructors of
-abstract algebra, specifically group theory.  It has been around since 2005
-as a desktop application, but was rewritten in 2019 as a web app.
+The inherited Group Explorer repository is preserved under `old/` as reference. New work should not depend on its application structure.
 
-## Status
+## Filesystem as a graph
 
-**Release 3.6.1:** Fix error in normalizer calculation
+Symlinks are intentional here. There is no single privileged hierarchy: a group should lead to its representations and symmetry objects, and those objects should lead back to the groups that use them.
 
-**Release 3.6.0:** Upgrade to jQuery 3.6.1, three.js r146
+`groups/raw` exposes the inherited `.group` library without copying it.
 
-**Release 3.5.0:** Several minor bugfixes.
+A5 is the first cross-linked example:
 
-**Release 3.4.0:** In Multable, an option to keep element coloring fixed
-on table reorganization.
+```text
+groups/A5/
+  source.group -> ../raw/A_5.group
+  representations/{1,2,3} -> representations/A5/{1,2,3}
+  symmetry_objects/{icosahedron,dodecahedron} -> symmetry_objects/...
 
-**Release 3.3.0:** Removed modal editors from Group Info page; improved
-version migration; internal improvements.
+representations/A5/1/group -> groups/A5
+symmetry_objects/Icosahedron/group -> groups/A5
+```
 
-**Release 3.2.0:** A new Sheets page, with improved stored sheets capabilies.
-Tell us what you think!
+The paired symlinks are deliberately redundant navigation. The underlying mathematical data should still have one owner; links provide alternate ways to reach it.
 
-**Release 3.1.0:** A new Group Info page look.
-Let us know what you think!
+## Direction
 
-**Release 3.0.0:** First official full-featured release! It's not done yet, though.
-We would still appreciate suggestions for enhancements or bug reports.
-
-**Beta:** We would appreciate any bug reports during summer 2019, so that we
-can have a polished and reliable version ready for students in Fall 2019
-courses.
-
-[Try it live here.](http://nathancarter.github.io/group-explorer/index.html)
-
-![Samples of various group visualizations](images/screenshot-all-visualizers.png)
-
-## Contributors
-
- * Ray Ellis
-    * developed most of the web version
- * Nathan Carter
-    * developed the original version
-    * added sheets and some miscellany to the web version
-    * authored the built-in help system
-
-If you're interested in adding anything to this app, please talk to us!  It's all in pure JS, so you may already know everything you need to start coding.
-
-If you have a request for particular groups you'd like to see added:  On the one hand, we've already added lots (all?) of the groups that are small enough to visualize sensibly (and a few that aren't!).  But we're still happy to discuss adding more if it would help your teaching or learning; it's easy to do by exporting the data from GAP.
-
-## License
-
-[LGPL v3.0](https://www.gnu.org/licenses/lgpl-3.0.en.html)
+The active application will be a native Android app aimed at the phone first. High-level control belongs in Idriç. Painting should use the existing Idriç/GLSL path. The first APK goal is deliberately tiny: choose one bundled group at random, render one group page, and exit.
