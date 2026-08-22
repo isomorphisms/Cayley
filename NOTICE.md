@@ -8,7 +8,7 @@ https://github.com/isomorphisms/Cayley
 
 The upstream project identifies Ray Ellis as the developer of most of the web version and Nathan Carter as the developer of the original version, the author of the built-in help system, and a contributor to the web version. Upstream `README.md` and `package.json` identify Group Explorer as GNU LGPL version 3 software.
 
-This fork contains modifications made by the isomorphisms project in 2026, including Android packaging and symmetry-pattern work. Group Explorer-derived code remains under GNU LGPL version 3. `COPYING.LESSER` and `COPYING` contain the LGPL v3 and incorporated GPL v3 license texts. Files with separate license notices retain their own terms.
+This fork contains modifications made by the isomorphisms project in 2026, including Android packaging and symmetry-pattern work. Except where a file carries a separate license notice, the Group Explorer code and the 2026 Cayley fork modifications are distributed under GNU LGPL version 3 only. `COPYING.LESSER` and `COPYING` contain the LGPL v3 and incorporated GPL v3 license texts. Files with separate license notices retain their own terms.
 
 ## Bundled third-party code
 
