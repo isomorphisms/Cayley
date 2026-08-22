@@ -19,10 +19,10 @@ Release procedure:
 1. Require the `Pattern tests` and `F-Droid release build` checks to pass on the integrated release commit.
 2. Confirm the Android package is `org.isomorphisms.groupexplorer`, the launcher/store name is `Cayley`, `versionName` is `0.1.0`, and `versionCode` is `1`.
 3. Tag that exact commit `android-v0.1.0`.
-4. Submit `fdroid/org.isomorphisms.groupexplorer.yml.template` as `metadata/org.isomorphisms.groupexplorer.yml` to fdroiddata.
+4. Copy `fdroid/org.isomorphisms.groupexplorer.yml.template` to `metadata/org.isomorphisms.groupexplorer.yml` in fdroiddata and replace `REPLACE_WITH_FULL_RELEASE_COMMIT_SHA` with the 40-character SHA of that integrated release commit. F-Droid's initial build metadata should identify the exact source revision rather than a branch or tag name.
 5. Keep `fastlane/metadata/android/en-US/` synchronized with the app.
 
-The F-Droid build uses the Android project in `android-app/` and bundles the checked-in Group Explorer web source. F-Droid signs the resulting release APK with its own key.
+The F-Droid build uses the Android project in `android-app/` and bundles the checked-in Group Explorer web source. F-Droid signs the resulting release APK with its own key. The current F-Droid Gradle selector maps Android Gradle Plugin 8.7.x to Gradle 8.9, and the release CI uses that same Gradle version.
 
 ## Version policy
 

@@ -51,10 +51,11 @@ jobs:
           grep -Fq "The MIT License" lib/three-146/LICENSE
           grep -Fq "SourceCode: https://github.com/isomorphisms/Cayley" fdroid/org.isomorphisms.groupexplorer.yml.template
           grep -Fq "Repo: https://github.com/isomorphisms/Cayley.git" fdroid/org.isomorphisms.groupexplorer.yml.template
-          grep -Fq "commit: android-v0.1.0" fdroid/org.isomorphisms.groupexplorer.yml.template
+          grep -Fq "commit: REPLACE_WITH_FULL_RELEASE_COMMIT_SHA" fdroid/org.isomorphisms.groupexplorer.yml.template
           grep -Fq "UpdateCheckMode: Tags ^android-v" fdroid/org.isomorphisms.groupexplorer.yml.template
           grep -Fxq "Cayley" fastlane/metadata/android/en-US/title.txt
           test -s fastlane/metadata/android/en-US/changelogs/1.txt
+          test -s fastlane/metadata/android/en-US/images/icon.png
 
       - uses: actions/setup-java@v4
         with:
@@ -68,7 +69,7 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: '8.10.2'
+          gradle-version: '8.9'
 
       - name: Build unsigned release APK
         working-directory: android-app
