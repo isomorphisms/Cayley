@@ -6,23 +6,30 @@ Used by CayleyDiagram.html, CycleGraph.html, Multtable.html, SymmetryObject.html
 ```html
 Markdown-->
 <div id="top-right-menu">
-   <div>
+   <button id="escape-hatch"
+           class="mobile-escape-hatch"
+           type="button"
+           title="Group Explorer choices"
+           aria-label="Open Group Explorer choices"
+           aria-expanded="false"
+           onclick="VC.toggleEscapeMenu()">ƒ⁻¹</button>
+   <div id="escape-destinations">
       <a href="index.html">
-         <i title="Project Home" class="fa fa-home fa-2x trm-black"></i></a>
+         <i title="Project Home" class="fa fa-home fa-2x trm-black"></i><span class="escape-label">Home</span></a>
       <a href="GroupExplorer.html">
-         <i title="Group Library" class="fa fa-book fa-2x trm-black"></i></a>
+         <i title="Group Library" class="fa fa-book fa-2x trm-black"></i><span class="escape-label">Group library</span></a>
       <a href="Sheet.html" target="_blank">
-         <i title="Sheets" class="fa fa-file trm-black" style="font-size:1.5em;vertical-align:10%;"></i></a>
+         <i title="Sheets" class="fa fa-file trm-black" style="font-size:1.5em;vertical-align:10%;"></i><span class="escape-label">Sheets</span></a>
       <a href="javascript:VC.findGroup()" id="find-group">
-         <i title="Find This Group" class="fa fa-search trm-black" style="font-size:1.75em;vertical-align:10%;"></i></a>
+         <i title="Find This Group" class="fa fa-search trm-black" style="font-size:1.75em;vertical-align:10%;"></i><span class="escape-label">Find this group</span></a>
       <a href="javascript:VC.help()">
-         <i title="Help" class="fa fa-question-circle fa-2x trm-black"></i></a>
+         <i title="Help" class="fa fa-question-circle fa-2x trm-black"></i><span class="escape-label">Help</span></a>
       <a href="https://github.com/nathancarter/group-explorer">
-         <i title="Source on GitHub" class="fa fa-github fa-2x trm-black"></i></a>
+         <i title="Source on GitHub" class="fa fa-github fa-2x trm-black"></i><span class="escape-label">Source</span></a>
       <a href="#" onclick="VC.hideControls()" id="hide-controls">
-         <i title="Hide controls" class="fa fa-chevron-circle-right fa-2x trm-black"></i></a>
+         <i title="Hide controls" class="fa fa-chevron-circle-right fa-2x trm-black"></i><span class="escape-label">Hide controls</span></a>
       <a href="#" onclick="VC.showControls()" id="show-controls">
-         <i title="Show controls" class="fa fa-chevron-circle-left fa-2x trm-black"></i></a>
+         <i title="Show controls" class="fa fa-chevron-circle-left fa-2x trm-black"></i><span class="escape-label">Show controls</span></a>
    </div>
    <div id="version" style="float: right; font-size: small"></div>
 </div>

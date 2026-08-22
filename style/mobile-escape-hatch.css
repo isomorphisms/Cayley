@@ -1,0 +1,87 @@
+.mobile-escape-hatch,
+.escape-label {
+   display: none;
+}
+
+@media (max-width: 760px), (pointer: coarse) and (max-width: 900px) {
+   body #header {
+      position: relative;
+      grid-template-areas: "heading" !important;
+      padding-right: 58px !important;
+   }
+
+   body #top-right-menu {
+      position: absolute !important;
+      top: 4px !important;
+      right: 4px !important;
+      width: auto !important;
+      max-width: none !important;
+      margin: 0 !important;
+      overflow: visible !important;
+      z-index: 100 !important;
+   }
+
+   body #top-right-menu .mobile-escape-hatch {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      min-width: 48px !important;
+      min-height: 48px !important;
+      padding: 0;
+      border: 1px solid rgba(0, 0, 0, 0.25);
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.92);
+      color: black;
+      font-family: serif;
+      font-size: 22px !important;
+      line-height: 1;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+      touch-action: manipulation;
+   }
+
+   body #top-right-menu #escape-destinations {
+      display: none !important;
+      position: absolute;
+      top: 52px;
+      right: 0;
+      min-width: 12rem !important;
+      padding: 4px;
+      border: 1px solid #aaa;
+      border-radius: 8px;
+      background: white;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.24);
+      overflow: hidden;
+   }
+
+   body #top-right-menu.escape-open #escape-destinations {
+      display: flex !important;
+      flex-direction: column;
+   }
+
+   body #top-right-menu #escape-destinations a {
+      display: flex !important;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      width: auto !important;
+      min-width: 12rem;
+      height: 44px;
+      padding: 0 10px;
+      box-sizing: border-box;
+      text-decoration: none;
+      white-space: nowrap;
+   }
+
+   body #top-right-menu #escape-destinations a + a {
+      border-top: 1px solid #eee;
+   }
+
+   body #top-right-menu .escape-label {
+      display: inline;
+      font-family: sans-serif;
+      font-size: 16px;
+      color: black;
+   }
+}

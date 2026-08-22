@@ -1,4 +1,5 @@
 @import url('./mobile.css');
+@import url('./mobile-escape-hatch.css');
 
 .menu {
    background-color: #EEEEEE;		/* very light gray (~gainsboro)*/
