@@ -1,0 +1,1 @@
+Initial F-Droid-ready Android packaging of the Group Explorer fork, including Cayley diagrams, multiplication tables, and the new symmetry-pattern view.
