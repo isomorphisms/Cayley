@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - mobile-apk
+  pull_request:
+    branches:
+      - mobile
   workflow_dispatch:
 
 permissions:
