@@ -1,0 +1,51 @@
+name: Group Explorer PR2 APK
+
+on:
+  push:
+    branches:
+      - scriptable-symmetry-patterns-apk
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify symmetry-pattern source
+        run: |
+          npm test
+          grep -F "Pattern.html?groupURL=" GroupExplorer.html
+          test -s js/GroupPattern.js
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - name: Install Android platform
+        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10.2'
+      - name: Build debug APK
+        working-directory: android-app
+        run: gradle --no-daemon :app:assembleDebug
+      - name: Verify bundled Group Explorer
+        run: |
+          APK=android-app/app/build/outputs/apk/debug/app-debug.apk
+          test -s "$APK"
+          unzip -l "$APK" | grep -F "assets/site/GroupExplorer.html"
+          unzip -l "$APK" | grep -F "assets/site/Pattern.html"
+          unzip -l "$APK" | grep -F "assets/site/Pattern.js"
+          unzip -l "$APK" | grep -F "assets/site/js/GroupPattern.js"
+          cp "$APK" group-explorer-pr2-pattern-debug.apk
+          sha256sum group-explorer-pr2-pattern-debug.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: group-explorer-pr2-pattern-apk
+          path: group-explorer-pr2-pattern-debug.apk
+          if-no-files-found: error
+          retention-days: 30
