@@ -56,7 +56,7 @@ public final class MainActivity extends Activity {
         });
 
         if (saved_instance_state == null) {
-            web_view.loadUrl("https://" + LOCAL_HOST + LOCAL_PREFIX + "GroupExplorer.html");
+            web_view.loadUrl("https://" + LOCAL_HOST + LOCAL_PREFIX + "Mobile.html");
         } else {
             web_view.restoreState(saved_instance_state);
         }

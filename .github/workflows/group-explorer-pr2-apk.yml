@@ -1,12 +1,12 @@
-name: Group Explorer PR2 APK
+name: Mobile first-paint APK
 
 on:
   push:
     branches:
-      - scriptable-symmetry-patterns-apk
+      - mobile-random-group-first-paint
   pull_request:
     branches:
-      - scriptable-symmetry-patterns
+      - scriptable-symmetry-patterns-apk
   workflow_dispatch:
 
 permissions:
@@ -18,11 +18,34 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - name: Verify symmetry-pattern source
+      - name: Test and verify mobile entry point
         run: |
           npm test
-          grep -F "Pattern.html?groupURL=" GroupExplorer.html
-          test -s js/GroupPattern.js
+          node tests/mobile-first-paint.test.mjs
+          node --check MobileGroup.js
+          node --check Mobile.js
+          node --check MobileTable.js
+          test -s Mobile.html
+          test -s Mobile.js
+          test -s MobileGroup.js
+          test -s MobileTable.js
+          grep -F "new MobileGroup(await response.text()" Mobile.js
+          grep -F "await import('./MobileTable.js')" Mobile.js
+          ! grep -F "./js/Library.js" Mobile.js
+          ! grep -F "./js/XMLGroup.js" Mobile.js
+          ! grep -F "./js/CayleyDiagramView.js" Mobile.js
+          ! grep -F "./js/MulttableView.js" Mobile.js
+          ! grep -F "toDataURL" Mobile.js
+          ! grep -Fi "jquery" Mobile.html
+          node <<'NODE'
+          const fs = require('fs')
+          const source = fs.readFileSync('Mobile.js', 'utf8')
+          const diagram = source.indexOf('createCayleyCanvas(group, size)')
+          const paint = source.indexOf('await afterPaint()')
+          const table = source.indexOf("await import('./MobileTable.js')")
+          if (!(diagram >= 0 && diagram < paint && paint < table)) process.exit(1)
+          NODE
+          grep -F 'Mobile.html' android-app/app/src/main/java/org/isomorphisms/groupexplorer/MainActivity.java
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -36,19 +59,20 @@ jobs:
       - name: Build debug APK
         working-directory: android-app
         run: gradle --no-daemon :app:assembleDebug
-      - name: Verify bundled Group Explorer
+      - name: Verify bundled mobile app
         run: |
           APK=android-app/app/build/outputs/apk/debug/app-debug.apk
           test -s "$APK"
-          unzip -l "$APK" | grep -F "assets/site/GroupExplorer.html"
-          unzip -l "$APK" | grep -F "assets/site/Pattern.html"
-          unzip -l "$APK" | grep -F "assets/site/Pattern.js"
-          unzip -l "$APK" | grep -F "assets/site/js/GroupPattern.js"
-          cp "$APK" group-explorer-pr2-pattern-debug.apk
-          sha256sum group-explorer-pr2-pattern-debug.apk
+          unzip -l "$APK" | grep -F "assets/site/Mobile.html"
+          unzip -l "$APK" | grep -F "assets/site/Mobile.js"
+          unzip -l "$APK" | grep -F "assets/site/MobileGroup.js"
+          unzip -l "$APK" | grep -F "assets/site/MobileTable.js"
+          unzip -l "$APK" | grep -F "assets/site/groups/Z_5.group"
+          cp "$APK" cayley-mobile-first-paint-debug.apk
+          sha256sum cayley-mobile-first-paint-debug.apk
       - uses: actions/upload-artifact@v4
         with:
-          name: group-explorer-pr2-pattern-apk
-          path: group-explorer-pr2-pattern-debug.apk
+          name: cayley-mobile-first-paint-apk
+          path: cayley-mobile-first-paint-debug.apk
           if-no-files-found: error
           retention-days: 30
