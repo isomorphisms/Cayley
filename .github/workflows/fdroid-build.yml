@@ -1,0 +1,92 @@
+name: F-Droid release build
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+      - edited
+  push:
+    branches:
+      - cayley
+    tags:
+      - 'android-v*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  release-apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify Group Explorer source and release metadata
+        run: |
+          npm test
+          grep -F "Pattern.html?groupURL=" GroupExplorer.html
+          test -s CayleyDiagram.js
+          test -s Multtable.js
+          test -s js/GroupPattern.js
+          grep -Fq "LGPL v3.0" README.md
+          grep -Fq "GNU GENERAL PUBLIC LICENSE" COPYING
+          grep -Fq "GNU LESSER GENERAL PUBLIC LICENSE" COPYING.LESSER
+          grep -Fq "Ray Ellis" NOTICE.md
+          grep -Fq "Nathan Carter" NOTICE.md
+          grep -Fq "The MIT License" lib/three-146/LICENSE
+          grep -Fq "SourceCode: https://github.com/isomorphisms/Cayley" fdroid/org.isomorphisms.groupexplorer.yml.template
+          grep -Fq "Repo: https://github.com/isomorphisms/Cayley.git" fdroid/org.isomorphisms.groupexplorer.yml.template
+          grep -Fq "commit: REPLACE_WITH_FULL_RELEASE_COMMIT_SHA" fdroid/org.isomorphisms.groupexplorer.yml.template
+          grep -Fq "UpdateCheckMode: Tags ^android-v" fdroid/org.isomorphisms.groupexplorer.yml.template
+          grep -Fxq "Cayley" fastlane/metadata/android/en-US/title.txt
+          test -s fastlane/metadata/android/en-US/changelogs/1.txt
+          test -s fastlane/metadata/android/en-US/images/icon.png
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: android-actions/setup-android@v3
+
+      - name: Install Android build inputs
+        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Build unsigned release APK
+        working-directory: android-app
+        run: gradle --no-daemon :app:assembleRelease
+
+      - name: Verify F-Droid release output
+        run: |
+          apk=android-app/app/build/outputs/apk/release/app-release-unsigned.apk
+          test -s "$apk"
+          unzip -t "$apk"
+          unzip -Z1 "$apk" > "$RUNNER_TEMP/cayley-release-files.txt"
+          grep -Fxq assets/site/GroupExplorer.html "$RUNNER_TEMP/cayley-release-files.txt"
+          grep -Fxq assets/site/CayleyDiagram.js "$RUNNER_TEMP/cayley-release-files.txt"
+          grep -Fxq assets/site/Multtable.js "$RUNNER_TEMP/cayley-release-files.txt"
+          grep -Fxq assets/site/Pattern.html "$RUNNER_TEMP/cayley-release-files.txt"
+          grep -Fxq assets/site/js/GroupPattern.js "$RUNNER_TEMP/cayley-release-files.txt"
+          grep -Fxq assets/site/NOTICE.md "$RUNNER_TEMP/cayley-release-files.txt"
+          grep -Fxq assets/site/COPYING "$RUNNER_TEMP/cayley-release-files.txt"
+          grep -Fxq assets/site/COPYING.LESSER "$RUNNER_TEMP/cayley-release-files.txt"
+          grep -Fxq assets/site/lib/three-146/LICENSE "$RUNNER_TEMP/cayley-release-files.txt"
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$apk" > "$RUNNER_TEMP/cayley-release-badging.txt"
+          grep -Fq "package: name='org.isomorphisms.groupexplorer' versionCode='1' versionName='0.1.0'" "$RUNNER_TEMP/cayley-release-badging.txt"
+          grep -Fq "application-label:'Cayley'" "$RUNNER_TEMP/cayley-release-badging.txt"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cayley-fdroid-unsigned
+          path: android-app/app/build/outputs/apk/release/app-release-unsigned.apk
+          if-no-files-found: error
+          retention-days: 30
