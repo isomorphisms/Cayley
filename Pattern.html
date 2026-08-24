@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pattern Language</title>
+    <link rel="icon" type="image/png" href="./images/favicon.png">
+    <style>
+        :root {
+            font-family: system-ui, sans-serif;
+            color-scheme: light dark;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            min-height: 100%;
+        }
+
+        body {
+            background: Canvas;
+            color: CanvasText;
+        }
+
+        header {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 0.75rem;
+            border-bottom: 1px solid color-mix(in srgb, CanvasText 20%, transparent);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.15rem;
+            flex: 1 1 auto;
+        }
+
+        select, button, textarea {
+            font: inherit;
+        }
+
+        select, button {
+            min-height: 2.75rem;
+            padding: 0.4rem 0.65rem;
+        }
+
+        .workspace {
+            display: grid;
+            grid-template-columns: minmax(18rem, 0.8fr) minmax(0, 1.2fr);
+            min-height: calc(100vh - 4.4rem);
+        }
+
+        .editor-panel {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            border-right: 1px solid color-mix(in srgb, CanvasText 20%, transparent);
+        }
+
+        textarea {
+            width: 100%;
+            flex: 1 1 auto;
+            min-height: 24rem;
+            resize: none;
+            border: 0;
+            padding: 1rem;
+            tab-size: 4;
+            font-family: ui-monospace, "Cascadia Mono", "SFMono-Regular", Consolas, monospace;
+            font-size: 0.95rem;
+            line-height: 1.45;
+            background: Canvas;
+            color: CanvasText;
+        }
+
+        #status {
+            min-height: 2.5rem;
+            padding: 0.6rem 0.8rem;
+            border-top: 1px solid color-mix(in srgb, CanvasText 20%, transparent);
+            font-family: ui-monospace, monospace;
+            font-size: 0.85rem;
+        }
+
+        #status.error {
+            font-weight: 650;
+        }
+
+        .preview {
+            min-width: 0;
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+            background: #7772;
+        }
+
+        svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+            max-height: calc(100vh - 4.4rem);
+            touch-action: manipulation;
+        }
+
+        @media (max-width: 760px) {
+            header h1 {
+                flex-basis: 100%;
+            }
+
+            .workspace {
+                grid-template-columns: 1fr;
+                grid-template-rows: minmax(19rem, 43vh) minmax(20rem, 57vh);
+            }
+
+            .editor-panel {
+                border-right: 0;
+                border-bottom: 1px solid color-mix(in srgb, CanvasText 20%, transparent);
+            }
+
+            textarea {
+                min-height: 0;
+            }
+
+            svg {
+                max-height: none;
+            }
+        }
+    </style>
+    <script type="module" src="./Pattern.js"></script>
+</head>
+<body>
+    <header>
+        <h1 id="pattern-heading">Pattern Language</h1>
+        <label>
+            Source
+            <select id="example">
+                <option value="conway-442">Conway *442</option>
+                <option value="calegari-tracks">Calegari train tracks</option>
+            </select>
+        </label>
+        <button id="render" type="button">Render</button>
+    </header>
+
+    <main class="workspace">
+        <section class="editor-panel" aria-label="Pattern source">
+            <textarea id="source" spellcheck="false" aria-label="Pattern program"></textarea>
+            <div id="status" role="status" aria-live="polite"></div>
+        </section>
+
+        <section class="preview" aria-label="Pattern preview">
+            <svg id="pattern" xmlns="http://www.w3.org/2000/svg"
+                 aria-label="Rendered pattern"></svg>
+        </section>
+    </main>
+</body>
+</html>

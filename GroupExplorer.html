@@ -32,7 +32,7 @@
        .groupOrder {
           text-align: center;
        }
-       .cayleyDiagram, .multiplicationTable, .symmetryObject, .noDiagram, .cycleGraph {
+       .cayleyDiagram, .multiplicationTable, .symmetryObject, .noDiagram, .cycleGraph, .pattern {
           text-align: center;
        }
 
@@ -72,6 +72,9 @@
        }
        td.cycleGraph.emphasized {
           background-color: hsl(240, 38%, 90%);
+       }
+       td.pattern.emphasized {
+          background-color: hsl(280, 38%, 92%);
        }
        td.noDiagram.emphasized {
           background-color: white;
@@ -128,7 +131,7 @@
       <table id="GroupTable" style="width: 100%;">
          <thead>
             <tr>
-               <th id="PageHeader" colspan="7">
+               <th id="PageHeader" colspan="8">
                   <div style="text-align: center; display: inline-block">
                      <img style="border: 1px solid black;" src="images/logo.png"/>
                   </div>
@@ -159,9 +162,10 @@
                <th class="diagramHeader"><a href="help/rf-groupterms/index.html#multiplication-table">Multiplication table</a></th>
                <th class="diagramHeader"><a href="help/rf-groupterms/index.html#objects-of-symmetry">Object of symmetry</a></th>
                <th class="diagramHeader"><a href="help/rf-groupterms/index.html#cycle-graph">Cycle graph</a></th>
+               <th class="diagramHeader">Symmetry pattern</th>
             </tr>
             <tr id="loadingMessage" class="hidden">
-               <th colspan="7">
+               <th colspan="8">
                   <center><i class="slowflash">Loading groups...</i></center>
                </th>
             </tr>
@@ -195,7 +199,42 @@
             <td class="cycleGraph">
                <a href="CycleGraph.html?groupURL=${group.URL}" title="Open Cycle Graph visualizer"><div></div></a>
             </td>
+            <td class="pattern">
+               <a href="Pattern.html?groupURL=${group.URL}" title="Open planar symmetry pattern"><div>✣</div></a>
+            </td>
          </tr>
       </template>
+
+      <script>
+       // Group rows are cached as serialized HTML.  Older cached rows predate
+       // the pattern column, so repair them as the library restores its cache.
+       const groupTableBody = document.querySelector('#GroupTable tbody');
+       const ensurePatternCell = (row) => {
+          if (row.nodeType !== Node.ELEMENT_NODE || row.localName !== 'tr' || row.querySelector('td.pattern')) {
+             return;
+          }
+          const groupURL = row.getAttribute('group');
+          if (groupURL == null) {
+             return;
+          }
+          const cell = document.createElement('td');
+          cell.className = 'pattern';
+          const link = document.createElement('a');
+          link.href = `Pattern.html?groupURL=${encodeURIComponent(groupURL)}`;
+          link.title = 'Open planar symmetry pattern';
+          const icon = document.createElement('div');
+          icon.textContent = '✣';
+          link.appendChild(icon);
+          cell.appendChild(link);
+          row.appendChild(cell);
+       };
+
+       Array.from(groupTableBody.rows).forEach(ensurePatternCell);
+       new MutationObserver((mutations) => {
+          mutations.forEach((mutation) => {
+             Array.from(mutation.addedNodes).forEach(ensurePatternCell);
+          });
+       }).observe(groupTableBody, {childList: true});
+      </script>
    </body>
 </html>
